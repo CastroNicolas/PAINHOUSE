@@ -13,7 +13,7 @@ const models = {
 };
 
 type ModelType = "house" | "room";
-type AreaType = "kitchen" | "living" | "bathroom" | null; // Añadido bathroom
+type AreaType = "kitchen" | "living" | "bathroom" | "room" | null; // Añadido bathroom y room
 
 export default function App() {
   const [brushColor, setBrushColor] = useState("#FF5733");
@@ -44,7 +44,7 @@ export default function App() {
       {/* Panel izquierdo - Controles */}
       <div className="w-1/2 p-6 space-y-6 overflow-y-auto">
         <h1 className="text-2xl font-bold">
-          Arquitecto 3D – Pincel Interactivo
+          Diseña en 3D – Pincel Interactivo
         </h1>
 
         {/* Selector de modelo principal */}

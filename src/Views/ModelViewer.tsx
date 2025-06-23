@@ -18,7 +18,7 @@ type Props = {
 
 function PaintableModel({ modelUrl, brushColor, paintingMode }: Props) {
   const { scene } = useGLTF(modelUrl) as any;
-  const { camera, gl, size } = useThree();
+  const { camera, gl } = useThree();
   const raycaster = useRef(new Raycaster());
   const mouse = useRef(new Vector2());
   const [meshes, setMeshes] = useState<Mesh[]>([]);
