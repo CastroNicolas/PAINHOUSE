@@ -274,7 +274,7 @@ export default function ColorCanvas({
     };
   }, [isDraggingColor, isDraggingHue]);
 
-  const currentRgb = hsvToRgb(hue, saturation, value);
+  // const currentRgb = hsvToRgb(hue, saturation, value);
 
   return (
     <div className="space-y-4">
