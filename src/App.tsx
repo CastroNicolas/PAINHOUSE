@@ -9,11 +9,10 @@ const models = {
   kitchen: "/models/kitchen.glb",
   living: "/models/living.glb",
   bathroom: "/models/bathroom.glb", // Nuevo modelo del baño
-  // bedroom: "/models/bedroom.glb",
 };
 
 type ModelType = "house" | "room";
-type AreaType = "kitchen" | "living" | "bathroom" | "room" | null; // Añadido bathroom y room
+type AreaType = "kitchen" | "living" | "bathroom" | "room" | null;
 
 export default function App() {
   const [brushColor, setBrushColor] = useState("#FF5733");
@@ -40,9 +39,9 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen flex">
+    <div className="h-screen flex flex-col lg:flex-row">
       {/* Panel izquierdo - Controles */}
-      <div className="w-1/2 p-6 space-y-6 overflow-y-auto">
+      <div className="w-full lg:w-1/2 p-4 sm:p-6 space-y-6 overflow-y-auto max-h-[50vh] lg:max-h-full">
         <h1 className="text-2xl font-bold">
           Diseña en 3D – Pincel Interactivo
         </h1>
@@ -189,7 +188,7 @@ export default function App() {
       </div>
 
       {/* Panel derecho - Visor 3D */}
-      <div className="w-1/2 h-full">
+      <div className="w-full lg:w-1/2 flex-1 h-[50vh] lg:h-full">
         <ModelViewer
           modelUrl={getCurrentModelUrl()}
           brushColor={brushColor}
