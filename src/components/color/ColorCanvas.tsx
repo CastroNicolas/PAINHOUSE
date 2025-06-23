@@ -1,4 +1,8 @@
 import { useState, useRef, useEffect } from "react";
+import { hsvToRgb } from "./colors/hsvToRgb";
+import { rgbToHsv } from "./colors/rgbToHsv";
+import { isValidHex, rgbToHex } from "./colors/rgbToHex";
+import { hexToRgb } from "./colors/hexToRgb";
 
 type Props = {
   brushColor: string;
@@ -6,108 +10,6 @@ type Props = {
   paintingMode: boolean;
   setPaintingMode: (mode: boolean) => void;
 };
-
-// Función para convertir HSV a RGB
-function hsvToRgb(h: number, s: number, v: number) {
-  const c = v * s;
-  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-  const m = v - c;
-
-  let r = 0,
-    g = 0,
-    b = 0;
-
-  if (0 <= h && h < 60) {
-    r = c;
-    g = x;
-    b = 0;
-  } else if (60 <= h && h < 120) {
-    r = x;
-    g = c;
-    b = 0;
-  } else if (120 <= h && h < 180) {
-    r = 0;
-    g = c;
-    b = x;
-  } else if (180 <= h && h < 240) {
-    r = 0;
-    g = x;
-    b = c;
-  } else if (240 <= h && h < 300) {
-    r = x;
-    g = 0;
-    b = c;
-  } else if (300 <= h && h < 360) {
-    r = c;
-    g = 0;
-    b = x;
-  }
-
-  r = Math.round((r + m) * 255);
-  g = Math.round((g + m) * 255);
-  b = Math.round((b + m) * 255);
-
-  return { r, g, b };
-}
-
-// Función para convertir RGB a HSV
-function rgbToHsv(r: number, g: number, b: number) {
-  r /= 255;
-  g /= 255;
-  b /= 255;
-
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  const delta = max - min;
-
-  let h = 0;
-  if (delta !== 0) {
-    if (max === r) {
-      h = 60 * (((g - b) / delta) % 6);
-    } else if (max === g) {
-      h = 60 * ((b - r) / delta + 2);
-    } else {
-      h = 60 * ((r - g) / delta + 4);
-    }
-  }
-
-  if (h < 0) h += 360;
-
-  const s = max === 0 ? 0 : delta / max;
-  const v = max;
-
-  return { h, s, v };
-}
-
-// Función para convertir RGB a hex
-function rgbToHex(r: number, g: number, b: number) {
-  return (
-    "#" +
-    [r, g, b]
-      .map((x) => {
-        const hex = x.toString(16);
-        return hex.length === 1 ? "0" + hex : hex;
-      })
-      .join("")
-  );
-}
-
-// Función para convertir hex a RGB
-function hexToRgb(hex: string) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
-    : { r: 0, g: 0, b: 0 };
-}
-
-// Función para validar formato hexadecimal
-function isValidHex(hex: string): boolean {
-  return /^#?([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
-}
 
 export default function ColorCanvas({
   brushColor,
@@ -274,14 +176,12 @@ export default function ColorCanvas({
     };
   }, [isDraggingColor, isDraggingHue]);
 
-  // const currentRgb = hsvToRgb(hue, saturation, value);
-
   return (
     <div className="space-y-4">
       {/* Botón de modo pintura */}
       <div className="flex items-center gap-4">
         <button
-          className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+          className={`px-4 py-3 sm:px-6 sm:py-3 text-sm sm:text-base rounded-lg font-medium transition-colors ${
             paintingMode
               ? "bg-red-500 text-white shadow-lg"
               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -299,7 +199,7 @@ export default function ColorCanvas({
           <div className="flex-1">
             <div
               ref={colorAreaRef}
-              className="w-full h-48 rounded cursor-crosshair relative select-none border"
+              className="w-full h-36 sm:h-48 rounded cursor-crosshair relative select-none border"
               style={{
                 background: `linear-gradient(to right, white, hsl(${hue}, 100%, 50%)), linear-gradient(to top, black, transparent)`,
               }}
@@ -362,7 +262,7 @@ export default function ColorCanvas({
                   type="text"
                   value={hexInput}
                   onChange={handleHexInputChange}
-                  className="font-mono text-xs px-2 py-1 border rounded flex-1 uppercase"
+                  className="font-mono text-[10px] sm:text-xs px-2 py-1 border rounded w-full"
                   placeholder="#000000"
                   maxLength={7}
                 />
@@ -376,7 +276,7 @@ export default function ColorCanvas({
                     type="text"
                     value={rgbInputs.r}
                     onChange={(e) => handleRgbInputChange("r", e.target.value)}
-                    className="font-mono text-xs px-1 py-1 border rounded w-12 text-center"
+                    className="font-mono text-[10px] sm:text-xs  border rounded w-full"
                     placeholder="0"
                     maxLength={3}
                   />
@@ -384,7 +284,7 @@ export default function ColorCanvas({
                     type="text"
                     value={rgbInputs.g}
                     onChange={(e) => handleRgbInputChange("g", e.target.value)}
-                    className="font-mono text-xs px-1 py-1 border rounded w-12 text-center"
+                    className="font-mono text-[10px] sm:text-xs  border rounded w-full"
                     placeholder="0"
                     maxLength={3}
                   />
@@ -392,7 +292,7 @@ export default function ColorCanvas({
                     type="text"
                     value={rgbInputs.b}
                     onChange={(e) => handleRgbInputChange("b", e.target.value)}
-                    className="font-mono text-xs px-1 py-1 border rounded w-12 text-center"
+                    className="font-mono text-[10px] sm:text-xs border rounded w-full"
                     placeholder="0"
                     maxLength={3}
                   />
