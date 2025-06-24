@@ -22,10 +22,11 @@ function PaintableModel({ modelUrl, brushColor, paintingMode }: Props) {
   const raycaster = useRef(new Raycaster());
   const mouse = useRef(new Vector2());
   const [meshes, setMeshes] = useState<Mesh[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
+  // Efecto separado SOLO para inicializar el modelo (una sola vez)
   useEffect(() => {
-    // Change cursor style when painting mode is active
-    document.body.style.cursor = paintingMode ? "crosshair" : "default";
+    if (isInitialized) return; // Si ya se inicializó, no hacer nada
 
     const foundMeshes: Mesh[] = [];
 
@@ -47,7 +48,7 @@ function PaintableModel({ modelUrl, brushColor, paintingMode }: Props) {
           child.userData.originalColor = child.material.color?.clone();
         }
 
-        // Configurar material para pintura
+        // Configurar material para pintura Y brillo uniforme
         const materials = Array.isArray(child.material)
           ? child.material
           : [child.material];
@@ -58,6 +59,19 @@ function PaintableModel({ modelUrl, brushColor, paintingMode }: Props) {
             // Asegurar que el material sea opaco para evitar mezclas
             mat.transparent = false;
             mat.opacity = 1.0;
+
+            // CONFIGURACIÓN PARA BRILLO UNIFORME
+            // Ajustar roughness para controlar el brillo (0 = muy brillante, 1 = mate)
+            mat.roughness = 0.3; // Ajusta este valor entre 0-1 según el brillo deseado
+
+            // Ajustar metalness si quieres un efecto más metálico
+            mat.metalness = 0.1; // Ajusta este valor entre 0-1
+
+            // FORZAR COLOR BLANCO AL INICIAR (SOLO LA PRIMERA VEZ)
+            mat.color = new Color(0xffffff); // Color blanco puro
+
+            // Asegurar que el material responda bien a la luz
+            mat.needsUpdate = true;
           }
         });
 
@@ -71,11 +85,17 @@ function PaintableModel({ modelUrl, brushColor, paintingMode }: Props) {
     });
 
     setMeshes(foundMeshes);
+    setIsInitialized(true); // Marcar como inicializado
+  }, [scene, isInitialized]);
+
+  // Efecto separado SOLO para cambiar el cursor
+  useEffect(() => {
+    document.body.style.cursor = paintingMode ? "crosshair" : "default";
 
     return () => {
       document.body.style.cursor = "default";
     };
-  }, [scene, paintingMode]);
+  }, [paintingMode]);
 
   useEffect(() => {
     if (!paintingMode || meshes.length === 0) return;
@@ -102,21 +122,25 @@ function PaintableModel({ modelUrl, brushColor, paintingMode }: Props) {
         console.log("Objeto intersectado:", mesh.name || "sin nombre");
         console.log("Pintando con color:", brushColor);
 
-        // Aplicar color completamente nuevo sin mezclar
+        // Aplicar color completamente nuevo sin mezclar, manteniendo propiedades de brillo
         if (mesh.material) {
           const newColor = new Color(brushColor);
 
           if (Array.isArray(mesh.material)) {
             mesh.material.forEach((mat: any) => {
               if (mat instanceof MeshStandardMaterial) {
-                // REEMPLAZAR completamente el color
+                // REEMPLAZAR completamente el color pero mantener propiedades de brillo
                 mat.color.copy(newColor);
+                mat.roughness = 0.3; // Mantener consistencia en el brillo
+                mat.metalness = 0.1; // Mantener consistencia en el metalness
                 mat.needsUpdate = true;
               }
             });
           } else if (mesh.material instanceof MeshStandardMaterial) {
-            // REEMPLAZAR completamente el color
+            // REEMPLAZAR completamente el color pero mantener propiedades de brillo
             mesh.material.color.copy(newColor);
+            mesh.material.roughness = 0.3; // Mantener consistencia en el brillo
+            mesh.material.metalness = 0.1; // Mantener consistencia en el metalness
             mesh.material.needsUpdate = true;
           }
         }
@@ -150,9 +174,14 @@ export default function ModelViewer({
       style={{ height: "100%", width: "100%" }}
       camera={{ position: [0, 2, 5], fov: 50 }}
     >
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[5, 10, 5]} intensity={1} />
-      <pointLight position={[10, 10, 10]} />
+      {/* ILUMINACIÓN MEJORADA PARA BRILLO UNIFORME */}
+      <ambientLight intensity={0.6} /> {/* Luz ambiente más suave */}
+      <directionalLight position={[5, 10, 5]} intensity={0.8} />
+      <directionalLight position={[-5, 10, -5]} intensity={0.4} />{" "}
+      {/* Luz adicional desde el otro lado */}
+      <pointLight position={[10, 10, 10]} intensity={0.3} />
+      <pointLight position={[-10, 10, -10]} intensity={0.3} />{" "}
+      {/* Luz puntual adicional */}
       <PaintableModel
         modelUrl={modelUrl}
         brushColor={brushColor}
