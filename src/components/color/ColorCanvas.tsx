@@ -150,6 +150,19 @@ export default function ColorCanvas({
       setBrushColor(hex);
     }
   };
+  const handleColorAreaTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    setIsDraggingColor(true);
+    // const touch = e.touches[0];
+    // updateColorFromPosition(touch as any);
+  };
+
+  const handleHueBarTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    setIsDraggingHue(true);
+    // const touch = e.touches[0];
+    // updateHueFromPosition(touch as any);
+  };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -159,7 +172,15 @@ export default function ColorCanvas({
         updateHueFromPosition(e);
       }
     };
-
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      if (isDraggingColor) {
+        updateColorFromPosition(touch as any);
+      } else if (isDraggingHue) {
+        updateHueFromPosition(touch as any);
+      }
+    };
     const handleMouseUp = () => {
       setIsDraggingColor(false);
       setIsDraggingHue(false);
@@ -168,11 +189,19 @@ export default function ColorCanvas({
     if (isDraggingColor || isDraggingHue) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
+
+      document.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      });
+      document.addEventListener("touchend", handleMouseUp);
     }
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
+
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleMouseUp);
     };
   }, [isDraggingColor, isDraggingHue]);
 
@@ -204,6 +233,7 @@ export default function ColorCanvas({
                 background: `linear-gradient(to right, white, hsl(${hue}, 100%, 50%)), linear-gradient(to top, black, transparent)`,
               }}
               onMouseDown={handleColorAreaMouseDown}
+              onTouchStart={handleColorAreaTouchStart}
             >
               {/* Indicador de posición */}
               <div
@@ -229,6 +259,7 @@ export default function ColorCanvas({
                   "linear-gradient(to bottom, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
               }}
               onMouseDown={handleHueBarMouseDown}
+              onTouchStart={handleHueBarTouchStart}
             >
               {/* Indicador de tono */}
               <div
