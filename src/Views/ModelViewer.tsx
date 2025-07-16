@@ -148,10 +148,12 @@ export default function ModelViewer({
   modelUrl,
   brushColor,
   paintingMode,
+  cameraPosition,
 }: {
   modelUrl: string;
   brushColor: string;
   paintingMode: boolean;
+  cameraPosition: [number, number, number];
 }) {
   const threeRef = useRef<{ gl: any; camera: any; scene: any } | null>(null);
   const [meshes, setMeshes] = useState<Mesh[]>([]);
@@ -238,7 +240,7 @@ export default function ModelViewer({
       <Canvas
         key={canvasKey}
         style={{ height: "100%", width: "100%" }}
-        camera={{ position: [0, 2, 5], fov: 50 }}
+        camera={{ position: cameraPosition, fov: 50 }}
         gl={{ preserveDrawingBuffer: true }}
       >
         <ambientLight intensity={0.6} />
