@@ -20,7 +20,7 @@ export const useColors = (
   const [hexInput, setHexInput] = useState("");
   const [rgbInputs, setRgbInputs] = useState({ r: "", g: "", b: "" });
   const [hsvInputs, setHsvInputs] = useState({ h: "", s: "", v: "" });
-  const [brightness, setBrightness] = useState(1);
+  const [brightness, setBrightness] = useState<number>(1);
 
   const [isUpdatingFromProp, setIsUpdatingFromProp] = useState(false);
 
@@ -198,7 +198,7 @@ export const useColors = (
     const rgb = hsvToRgb(
       component === "h" ? numValue : hue,
       component === "s" ? numValue : saturation,
-      component === "v" ? numValue : value
+      component === "v" ? numValue : Number(value)
     );
 
     const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
@@ -308,6 +308,7 @@ export const useColors = (
     value,
     rgbInputs,
     hsvInputs,
+    brightness,
     setIsUpdatingFromProp,
   };
 };

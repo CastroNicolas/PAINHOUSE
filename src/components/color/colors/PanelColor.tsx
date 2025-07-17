@@ -1,15 +1,14 @@
 type PanelColorProps = {
-  colorAreaRef: React.RefObject<HTMLDivElement>;
-  hueBarRef: React.RefObject<HTMLDivElement>;
-  handleColorAreaMouseDown: React.MouseEventHandler<HTMLDivElement>;
-  handleHueBarMouseDown: React.MouseEventHandler<HTMLDivElement>;
-  handleColorAreaTouchStart: React.TouchEventHandler<HTMLDivElement>;
-  handleHueBarTouchStart: React.TouchEventHandler<HTMLDivElement>;
+  colorAreaRef: React.RefObject<HTMLDivElement | null>;
+  hueBarRef: React.RefObject<HTMLDivElement | null>;
+  handleColorAreaMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
+  handleHueBarMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
+  handleColorAreaTouchStart: (e: React.TouchEvent<HTMLDivElement>) => void;
+  handleHueBarTouchStart: (e: React.TouchEvent<HTMLDivElement>) => void;
   hue: number;
   value: number;
   saturation: number;
 };
-
 export const PanelColor = ({
   colorAreaRef,
   hueBarRef,

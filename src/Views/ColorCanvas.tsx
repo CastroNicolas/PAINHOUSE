@@ -9,6 +9,7 @@ type Props = {
   setBrushColor: (c: string) => void;
   paintingMode: boolean;
   setPaintingMode: (mode: boolean) => void;
+  setIsUpdatingFromProp?: (value: boolean) => void;
 };
 
 export default function ColorCanvas({

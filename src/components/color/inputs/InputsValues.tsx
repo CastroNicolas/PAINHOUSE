@@ -1,14 +1,14 @@
-type InputsValuesProps = {
+export type InputsValuesProps = {
   hexInput: string;
   rgbInputs: { r: string; g: string; b: string };
-  handleHexInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleRgbInputChange: (channel: "r" | "g" | "b", value: string) => void;
-  // handleHsvInputChange: (component: "h" | "s" | "v", value: string) => void;
-  handleBrightnessInputChange: (value: string) => void;
-  // hsvInputs: { h: string; s: string; v: string };
+  hsvInputs: { h: string; s: string; v: string };
   hue: number;
-  value: number;
   saturation: number;
+  value: number;
+  handleHexInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRgbInputChange: (component: "r" | "g" | "b", value: string) => void;
+  handleHsvInputChange: (component: "h" | "s" | "v", value: string) => void;
+  handleBrightnessInputChange: (value: string) => void;
 };
 
 export const InputsValues = ({
