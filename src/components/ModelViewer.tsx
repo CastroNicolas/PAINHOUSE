@@ -159,10 +159,10 @@ export default function ModelViewer({
   const [meshes, setMeshes] = useState<Mesh[]>([]);
 
   const angles = [
-    { name: "Frontal", position: [0, 0, 5] },
-    { name: "Trasera", position: [0, 0, -5] },
-    { name: "Izquierda", position: [-5, 0, 0] },
-    { name: "Derecha", position: [5, 0, 0] },
+    { name: "Frontal", position: [0, 4, 9] },
+    { name: "Trasera", position: [0, 4, -9] },
+    { name: "Izquierda", position: [-9, 4, 0] },
+    { name: "Derecha", position: [9, 4, 0] },
   ];
 
   const captureViewsToPDF = async () => {

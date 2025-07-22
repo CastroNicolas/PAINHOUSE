@@ -1,7 +1,7 @@
-import { ColorsOptions } from "../components/color/inputs/ColorsOptions";
-import { InputsValues } from "../components/color/inputs/InputsValues";
-import { PanelColor } from "../components/color/colors/PanelColor";
-import { PaintButton } from "../components/buttons/PaintButton";
+import { ColorsOptions } from "./color/inputs/ColorsOptions";
+import { InputsValues } from "./color/inputs/InputsValues";
+import { PanelColor } from "./color/colors/PanelColor";
+import { PaintButton } from "./buttons/PaintButton";
 import { useColors } from "../hooks/useColors";
 
 type Props = {
